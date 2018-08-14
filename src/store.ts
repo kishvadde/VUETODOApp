@@ -1,41 +1,27 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { isRegExp } from 'util';
-import { toUnicode } from 'punycode';
-
+import {TodoObject, ID, IDNAME} from './models';
 Vue.use(Vuex);
 
-interface TodoObject {
-  id: number;
-  name: string;
-  completed: boolean;
-  editmode: boolean;
-  updateError:string;
-  active:boolean,
-}
+
 
 interface State{
     todos: TodoObject[];
-    createError:string;
-    getTodoIndex:(id:number) => number
+    createTodoError:string;
+    getTodoIndex:(id:number) => number;
 }
 
 interface TodoStore{
-  state:State,
-  getters:{},
-  mutations:{},
-  actions:{},
+  state:State;
+  getters:{};
+  mutations:{};
+  actions:{};
 }
-
-interface ID{
-  id:number,
-}
-
 
 var store:TodoStore = {
     state:{
       todos:[],
-      createError:"",
+      createTodoError:"",
       getTodoIndex(id:number){
         for(var index:number = 0; index < this.todos.length; index++){
             if (this.todos[index].id === id){
@@ -51,6 +37,10 @@ var store:TodoStore = {
           return state.todos;
       },
 
+      createError(state:State){
+        return state.createTodoError;
+      },
+
       getActiveTodos(state:State){
         return state.todos.filter((todo)=>todo.active)
       },
@@ -61,8 +51,8 @@ var store:TodoStore = {
     },
 
     mutations:{
-      createTodo(state:State, payload:string){
 
+      createTodo(state:State, payload:string){
         if (payload.length > 0){
             state.todos.push({
               id: state.todos.length+1,
@@ -74,17 +64,16 @@ var store:TodoStore = {
             });
         }
         else{
-          state.createError = 'Todo should not be empty';
+          state.createTodoError = 'Todo should not be empty';
         }
       },
-
 
       deleteTodo(state:State,payload:ID){
         var index:number  = state.getTodoIndex(payload.id);
         if(index >= 0){
             state.todos[index].active = false;
         }
-        state.createError = "";
+        state.createTodoError = "";
       },
 
       editTodo(state:State, payload:ID){
@@ -92,16 +81,16 @@ var store:TodoStore = {
         if(index >= 0){
             state.todos[index].editmode = true;
         }
-        state.createError = "";
+        state.createTodoError = "";
       },
 
       toggleTodoStatus(state:State, payload:ID){
         var index:number =  state.getTodoIndex(payload.id);
         state.todos[index].completed = !state.todos[index].completed;
-        state.createError = "";
+        state.createTodoError = "";
       },
 
-      updateTodo(state:State, payload:{id:number,name:string}){
+      updateTodo(state:State, payload:IDNAME){
      
         var index:number =  state.getTodoIndex(payload.id);
         if(state.todos[index].editmode && payload.name.length > 0){
@@ -112,17 +101,34 @@ var store:TodoStore = {
             state.todos[index].updateError = "";
         }
         else{
-            console.log('In esle')
-            console.log(index);
             state.todos[index].updateError = 'Todo should not be empty';
         }
-        state.createError = "";
+        state.createTodoError = "";
       }
 
 
 
     },
     actions:{
+      createTodo(context:any, name:string){
+          context.commit('createTodo',name);
+      },
+
+      deleteTodo(context:any, payload:ID){
+          context.commit('deleteTodo',payload);
+      },
+
+      editTodo(context:any, payload:ID){
+        context.commit('editTodo', payload);
+      },
+
+      toggleTodoStatus(context:any, payload:ID){
+        context.commit('toggleTodoStatus', payload);
+      },
+
+      updateTodo(context:any, payload:IDNAME){
+        context.commit('updateTodo', payload);
+      }
 
     }
 

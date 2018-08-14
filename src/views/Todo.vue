@@ -29,7 +29,7 @@
     <div class="todo" v-else>
         <form action="">
            <div class="form-group">
-                <input v-model="updated_todo" type="text" class="form-control">
+                <input v-model="updatedTodo" type="text" class="form-control">
             </div>
             <div v-if="updateError">*{{updateError}}</div>
         </form>
@@ -45,6 +45,7 @@ import Vue from 'vue'
 
 @Component
 export default class Todo extends Vue{
+
    @Prop({default: 0}) private id:number;
    @Prop({default: ""}) private name:string;
    @Prop({default: false}) private completed:boolean;
@@ -52,30 +53,30 @@ export default class Todo extends Vue{
    @Prop({default: ""}) private updateError:string;
    @Prop({default: true}) private active:boolean;
 
-    updated_todo:string = "";
+    updatedTodo:string = "";
 
     created(){
-        this.updated_todo = this.name;
+        this.updatedTodo = this.name;
     }
 
     editTodo(){
-        this.$store.commit('editTodo',
+        this.$store.dispatch('editTodo',
            {id:this.id});
     }
 
     updateTodo(){
-        this.$store.commit('updateTodo',
-            {id:this.id,
-            name:this.updated_todo
-            });
+        this.$store.dispatch('updateTodo',
+                            {id:this.id,
+                            name:this.updatedTodo
+                        });
     }
 
     deleteTodo(){
-        this.$store.commit('deleteTodo', {id: this.id});
+        this.$store.dispatch('deleteTodo', {id: this.id});
     }
 
     toggleTodoStatus(){
-        this.$store.commit('toggleTodoStatus', {id: this.id});
+        this.$store.dispatch('toggleTodoStatus', {id: this.id});
     }
 
   }

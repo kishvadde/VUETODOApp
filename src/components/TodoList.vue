@@ -5,7 +5,7 @@
                 <form action="">
                     <div class="form-group">
                         <label for="todo">Create Todo:</label>
-                        <input v-model="new_todo" type="text" placeholder="Enter your todo text here" class="form-control" id="todo">
+                        <input v-model="newTodo" type="text" placeholder="Enter your todo text here" class="form-control" id="todo">
                         <div v-if="createError" :style="{color:'red'}">*{{createError}}</div>
                     </div>
                 </form>
@@ -24,18 +24,12 @@
 
 
 <script lang="ts">
-import Vue from 'vue'
-import Todo from '../views/Todo.vue'
+import Vue from 'vue';
+import Todo from '../views/Todo.vue';
+import {TodoObject} from '../models';
 import { Component,Prop} from 'vue-property-decorator'
 
 
-interface TodoObject {
-    id: number;
-    name: string;
-    completed: boolean;
-    editmode: boolean;
-    update_error:string;
-}
 
 @Component({components: {
     Todo
@@ -43,92 +37,19 @@ interface TodoObject {
 })
 export default class TodoList extends Vue{
 
-    todolist:TodoObject[] = [];
-    new_todo:string = "";
-
-    get ActiveTodoList(){
-        return this.$store.getters.getActiveTodos;
-    }
+    newTodo:string = "";
 
     get AllTodoList(){
-        return this.$store.state.todos;
+        return this.$store.getters.getAllTodos;
     }
 
     get createError(){
-        return this.$store.state.createError;
+        return this.$store.getters.createError;
     }
 
     createTodo(){
-        this.$store.commit('createTodo',this.new_todo);
+        this.$store.dispatch('createTodo',this.newTodo);
     }
 
-    // getTodoIndex(id: number){      
-    //     for(var index:number = 0; index < this.todolist.length; index++){
-    //         if (this.todolist[index].id === id){
-    //             return index;
-    //         }
-    //     }
-    //     return -1;
-    // }
-
-    // createTodo(name:string){
-    //     if(this.new_todo.length > 0){
-    //         this.count += 1;
-    //         this.todolist.push({
-    //             id: this.count,
-    //             name: this.new_todo,
-    //             completed: false,
-    //             editmode:false,
-    //             update_error:"",
-    //         });
-    //         this.new_todo = "";
-    //         this.error = "";
-    //     }
-    //     else{
-    //         this.error = "Todo should not be empty"
-    //     }
-    // }
-
-    // deleteTodo(id: number){
-    //     var index:number = this.getTodoIndex(id);
-    //     if(index >= 0){
-    //         this.todolist.splice(index,1);
-    //     }
-    //     this.error = "";
-    // }
-
-    // editTodo(id:number){
-    //     var index:number = this.getTodoIndex(id);
-    //     if(index >= 0){
-    //         this.todolist[index].editmode = true;
-    //     }
-    //     this.error = "";
-    // }
-
-    // toggleTodoStatus(id: number){
-    //    var index:number =  this.getTodoIndex(id);
-    //    this.todolist[index].completed = !this.todolist[index].completed;
-    //    this.error = "";
-    // }
-
-    // updateTodo(id: number, name:string){
-
-    //     var index:number = this.getTodoIndex(id);
-    //     if(this.todolist[index].editmode && name.length > 0){
-    //         this.todolist[index].name = name;
-    //         this.todolist[index].editmode = false;
-    //         this.todolist[index].completed = false;
-    //         this.todolist[index].update_error = "";
-    //     }
-    //     else{
-    //         this.todolist[index].update_error = 'Todo should not be empty';
-    //     }
-    //     this.error = "";
-        
-    // }
 }
 </script>
-
-
-<style>
-</style>

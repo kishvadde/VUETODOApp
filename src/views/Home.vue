@@ -7,7 +7,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import TodoList from '../components/TodoList.vue'
-import { Component,Prop} from 'vue-property-decorator'
+import { Component} from 'vue-property-decorator'
 
 @Component({
   components:{
